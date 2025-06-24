@@ -113,7 +113,7 @@ def login_user(request):
                 # Determine dashboard URL based on role
                 dashboard_urls = {
                     'doctor': '/doctor-dashboard',
-                    'nurse': '/nurse-dashboard',
+                    'nurse': '/dashboard',
                     'admin': '/admin-dashboard',
                     'patient': '/patient-dashboard',
                 }
