@@ -12,7 +12,7 @@ interface DashboardStats {
   female_patients: number;
 }
 
-export function Dashboard() {
+export function NurseDashboard() {
   const [stats, setStats] = useState<DashboardStats>({
     total_patients: 0,
     male_patients: 0,

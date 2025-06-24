@@ -2,9 +2,9 @@
 
 import { useState } from 'react';
 import { Layout } from '@/components/layout';
-import { Dashboard } from '@/components/dashboard';
-import { PatientForm } from '@/components/patient-form';
-import { PatientList } from '@/components/patient-list';
+import { Dashboard } from '@/components/nurse/dashboard';
+import { PatientForm } from '@/components/nurse/patient-form';
+import { PatientList } from '@/components/nurse/patient-list';
 import { Toaster } from '@/components/ui/sonner';
 
 export default function Home() {

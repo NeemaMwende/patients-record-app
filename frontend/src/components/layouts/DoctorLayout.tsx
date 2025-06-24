@@ -1,16 +1,18 @@
 "use client"
 
 import { useState } from 'react';
-import { 
-  LayoutDashboard, 
-  Users, 
-  UserPlus, 
-  Menu, 
+import Link from 'next/link';
+import {
+  LayoutDashboard,
+  Users,
+  UserPlus,
+  Menu,
   X,
   Stethoscope,
   FileText,
   Calendar,
-  UserCog
+  UserCog,
+  LogOut
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -24,59 +26,37 @@ interface DoctorLayoutProps {
 }
 
 const navigation = [
-  {
-    name: 'Dashboard',
-    id: 'dashboard',
-    icon: LayoutDashboard,
-    description: 'Overview and statistics'
-  },
-  {
-    name: 'Register Doctor',
-    id: 'form',
-    icon: UserPlus,
-    description: 'Add new doctor record'
-  },
-  {
-    name: 'Doctor Records',
-    id: 'list',
-    icon: Users,
-    description: 'View and manage doctors'
-  },
-  {
-    name: 'Schedules',
-    id: 'schedules',
-    icon: Calendar,
-    description: 'Manage doctor schedules'
-  },
-  {
-    name: 'Patients',
-    id: 'patients',
-    icon: UserCog,
-    description: 'Doctor-Patient assignments'
-  },
+  { name: 'Dashboard', id: 'dashboard', icon: LayoutDashboard, description: 'Overview and statistics' },
+  { name: 'Register Doctor', id: 'form', icon: UserPlus, description: 'Add new doctor record' },
+  { name: 'Doctor Records', id: 'list', icon: Users, description: 'View and manage doctors' },
+  { name: 'Schedules', id: 'schedules', icon: Calendar, description: 'Manage doctor schedules' },
+  { name: 'Patients', id: 'patients', icon: UserCog, description: 'Doctor-Patient assignments' },
 ];
 
 export function DoctorLayout({ children, activeTab, onTabChange }: DoctorLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  const handleLogout = () => {
+    // Replace with your logout logic
+    console.log('Logging out...');
+    window.location.href = '/auth/login';
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Mobile sidebar overlay */}
       {sidebarOpen && (
-        <div 
+        <div
           className="fixed inset-0 z-40 bg-black bg-opacity-25 lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
 
-      {/* Sidebar - Full height, fixed position */}
       <div className={cn(
         "fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform transition-transform duration-200 ease-in-out",
         "lg:translate-x-0",
         sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
       )}>
         <div className="flex flex-col h-full">
-          {/* Header */}
           <div className="flex items-center justify-between h-16 px-4 border-b border-gray-200 flex-shrink-0">
             <div className="flex items-center space-x-2">
               <div className="p-2 bg-blue-600 rounded-lg">
@@ -87,22 +67,16 @@ export function DoctorLayout({ children, activeTab, onTabChange }: DoctorLayoutP
                 <p className="text-xs text-gray-500">Doctor Management</p>
               </div>
             </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="lg:hidden"
-              onClick={() => setSidebarOpen(false)}
-            >
+            <Button variant="ghost" size="sm" className="lg:hidden" onClick={() => setSidebarOpen(false)}>
               <X className="h-5 w-5" />
             </Button>
           </div>
 
-          {/* Navigation - Flexible content area */}
           <nav className="flex-1 px-4 py-4 space-y-2 overflow-y-auto">
             {navigation.map((item) => {
               const Icon = item.icon;
               const isActive = activeTab === item.id;
-              
+
               return (
                 <button
                   key={item.id}
@@ -117,10 +91,7 @@ export function DoctorLayout({ children, activeTab, onTabChange }: DoctorLayoutP
                       : "text-gray-700 hover:bg-gray-50 hover:text-gray-900"
                   )}
                 >
-                  <Icon className={cn(
-                    "mr-3 h-5 w-5",
-                    isActive ? "text-blue-600" : "text-gray-400"
-                  )} />
+                  <Icon className={cn("mr-3 h-5 w-5", isActive ? "text-blue-600" : "text-gray-400")} />
                   <div className="text-left">
                     <div>{item.name}</div>
                     <div className="text-xs text-gray-500">{item.description}</div>
@@ -130,7 +101,6 @@ export function DoctorLayout({ children, activeTab, onTabChange }: DoctorLayoutP
             })}
           </nav>
 
-          {/* Footer - Fixed at bottom */}
           <div className="p-4 border-t border-gray-200 flex-shrink-0">
             <Card className="p-3 bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
               <div className="flex items-center space-x-2">
@@ -145,9 +115,7 @@ export function DoctorLayout({ children, activeTab, onTabChange }: DoctorLayoutP
         </div>
       </div>
 
-      {/* Main content */}
       <div className="lg:ml-64">
-        {/* Top bar */}
         <div className="sticky top-0 z-10 bg-white shadow-sm border-b border-gray-200">
           <div className="flex items-center justify-between h-16 px-4 sm:px-6 lg:px-8">
             <div className="flex items-center">
@@ -168,23 +136,24 @@ export function DoctorLayout({ children, activeTab, onTabChange }: DoctorLayoutP
                 </p>
               </div>
             </div>
-            
+
             <div className="flex items-center space-x-4">
-              <div className="hidden sm:block">
-                <div className="flex items-center space-x-2 text-sm text-gray-500">
-                  <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                  <span>System Online</span>
-                </div>
+              <div className="hidden sm:block text-sm text-gray-500 flex items-center space-x-2">
+                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                <span>System Online</span>
               </div>
+
+              {/* Logout Button */}
+              <Button variant="outline" onClick={handleLogout}>
+                <LogOut className="h-4 w-4 mr-2" />
+                Logout
+              </Button>
             </div>
           </div>
         </div>
 
-        {/* Page content */}
         <main className="p-4 sm:p-6 lg:p-8">
-          <div className="max-w-7xl mx-auto">
-            {children}
-          </div>
+          <div className="max-w-7xl mx-auto">{children}</div>
         </main>
       </div>
     </div>
