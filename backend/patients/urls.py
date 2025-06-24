@@ -18,5 +18,5 @@ urlpatterns = [
     
     # Future endpoints (commented out for now)
     # path('doctors/', views.doctor_list, name='doctor-list'),    
-    # path('admin/', views.admin_dashboard, name='admin-dashboard'),
+    # path('admin/', views.admin-dashboard, name='admin-dashboard'),
 ]

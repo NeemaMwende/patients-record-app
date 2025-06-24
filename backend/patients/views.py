@@ -198,12 +198,12 @@ def login_success(request):
     Redirect function for successful login (if using Django's built-in auth)
     """
     if request.user.role == 'doctor':
-        return redirect('doctor_dashboard')
+        return redirect('doctor-dashboard')
     elif request.user.role == 'nurse':
-        return redirect('nurse_dashboard')
+        return redirect('nurse-dashboard')
     elif request.user.role == 'admin':
-        return redirect('admin_dashboard')
+        return redirect('admin-dashboard')
     elif request.user.role == 'patient':
-        return redirect('patient_dashboard')
+        return redirect('patient-dashboard')
     else:
         return redirect('home')
