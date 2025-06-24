@@ -1,8 +1,8 @@
 "use client"
 
 import { useState } from 'react';
-import { Layout } from '@/components/layout';
-import { Dashboard } from '@/components/nurse/dashboard';
+import { NurseLayout } from '@/components/layouts/NurseLayout';
+import { NurseDashboard } from '@/components/nurse/nurse-dashboard';
 import { PatientForm } from '@/components/nurse/patient-form';
 import { PatientList } from '@/components/nurse/patient-list';
 import { Toaster } from '@/components/ui/sonner';
@@ -13,7 +13,7 @@ export default function Home() {
   const renderContent = () => {
     switch (activeTab) {
       case 'dashboard':
-        return <Dashboard />;
+        return <NurseDashboard />;
       case 'register':
         return (
           <div className="space-y-4">
@@ -23,15 +23,15 @@ export default function Home() {
       case 'patients':
         return <PatientList />;
       default:
-        return <Dashboard />;
+        return <NurseDashboard />;
     }
   };
 
   return (
     <>
-      <Layout activeTab={activeTab} onTabChange={setActiveTab}>
+      <NurseLayout activeTab={activeTab} onTabChange={setActiveTab}>
         {renderContent()}
-      </Layout>
+      </NurseLayout>
       <Toaster />
     </>
   );
