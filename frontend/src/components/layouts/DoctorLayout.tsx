@@ -33,17 +33,17 @@ const sidebarItems = [
   },
   {
     title: 'My Patients',
-    href: '/doctor/patients',
+    href: '/doctor/MyPatientsPage',
     icon: Users,
   },
   {
     title: 'Appointments',
-    href: '/doctor/appointments',
+    href: '/doctor/DoctorAppointments',
     icon: Calendar,
   },
   {
     title: 'Availability',
-    href: '/doctor/availability',
+    href: '/doctor/DoctorAvailability',
     icon: Clock,
   },
   {
