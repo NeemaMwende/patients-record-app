@@ -17,7 +17,7 @@ export default function Home() {
             An all-in-one hospital management system powered by Next.js and Django. Simplifying patient care, record management, and staff coordination.
           </p>
           <Button asChild className="bg-purple-700 hover:bg-purple-800 text-white text-lg px-6 py-3 rounded-xl">
-            <Link href="/auth/signup">
+            <Link href="/profiles">
               <UserPlus className="mr-2 h-5 w-5" /> Join Us
             </Link>
           </Button>

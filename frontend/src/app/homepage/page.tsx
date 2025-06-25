@@ -11,7 +11,7 @@ export default function HomePage() {
     // Redirect to login page after a brief moment
     const timer = setTimeout(() => {
       router.push('/auth/login')
-    }, 2000)
+    }, 1000)
 
     return () => clearTimeout(timer)
   }, [router])
