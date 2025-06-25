@@ -29,7 +29,6 @@ export interface Admin {
   updated_at: string;
   age: number;
 }
-
 export interface AdminFormData {
   first_name: string;
   last_name: string;
@@ -47,26 +46,26 @@ export interface AdminFormData {
 
 export const adminApi = {
     // Get all patients
-  getPatients: (search?: string) => 
+  getAdmins: (search?: string) => 
     api.get<Admin[]>('/api/admins/', { params: { search } }),
   
   // Get single patient
-  getPatient: (patientId: string) => 
-    api.get<Admin>(`/api/admins/${patientId}/`),
+  getAdmin: (adminId: string) => 
+    api.get<Admin>(`/api/admins/${adminId}/`),
   
   // Create patient
-  createPatient: (data: AdminFormData) => 
+  createAdmin: (data: AdminFormData) => 
     api.post<Admin>('/api/admins/', data),
   
   // Update patient
-  updatePatient: (adminId: string, data: Partial<AdminFormData>) => 
+  updateAdmin: (adminId: string, data: Partial<AdminFormData>) => 
     api.put<Admin>(`/api/admins/${adminId}/`, data),
   
   // Delete patient
-  deletePatient: (adminId: string) => 
+  deleteAdmin: (adminId: string) => 
     api.delete(`/api/admin/${adminId}/`),
   
   // Get stats
   getStats: () => 
-    api.get<{total_patients: number; male_patients: number; female_patients: number}>('/api/stats/'),
+    api.get<{total_admins: number; male_admins: number; female_admins: number}>('/api/stats/'),
 };

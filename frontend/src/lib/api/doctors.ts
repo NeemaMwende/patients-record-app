@@ -2,6 +2,7 @@
   // lib/api/doctors.ts
   import { Doctor, DoctorStats, DoctorSchedule } from '@/lib/types/doctor';
   import { DoctorFormValues, ScheduleFormValues } from '@/lib/validations/doctor';
+import axios from 'axios';
   
   export const doctorApi = {
     getDoctors: async (search?: string) => {
@@ -139,5 +140,10 @@
           updated_at: new Date().toISOString(),
         })) as DoctorSchedule[]
       };
+    },
+
+    getRecentAppointments: async (doctorId: string) => {
+      const response = await axios.get(`/api/doctors/${doctorId}/appointments/recent`);
+      return response.data;
     },
   };
