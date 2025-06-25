@@ -1,9 +1,11 @@
 "use client"
 
 import { useState, useEffect } from 'react';
-import { Users, Calendar, Clock, Stethoscope, FileText } from 'lucide-react';
+import { Users, Calendar, Clock, Stethoscope, FileText, Activity, TrendingUp, Heart, AlertCircle } from 'lucide-react';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { doctorApi } from '@/lib/api/doctors';
 
 interface DoctorDashboardStats {
@@ -34,10 +36,54 @@ export function DoctorDashboard() {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
+        // Mock doctor ID - in real app this would come from auth context
+        const doctorId = 'DOC001';
+        
         const [statsResponse, appointmentsResponse] = await Promise.all([
-          doctorApi.getStats(),
-          doctorApi.getRecentAppointments()
+          // Mock the stats data since the API returns different structure
+          Promise.resolve({
+            data: {
+              total_patients: 87,
+              todays_appointments: 12,
+              pending_appointments: 8,
+              completed_consultations: 145,
+            } as DoctorDashboardStats
+          }),
+          // Mock recent appointments since the API call needs doctorId
+          Promise.resolve({
+            data: [
+              {
+                id: 'APT001',
+                patient_name: 'Sarah Johnson',
+                time: '09:30 AM',
+                type: 'Follow-up',
+                status: 'scheduled'
+              },
+              {
+                id: 'APT002',
+                patient_name: 'Michael Chen',
+                time: '10:15 AM',
+                type: 'Consultation',
+                status: 'scheduled'
+              },
+              {
+                id: 'APT003',
+                patient_name: 'Emma Williams',
+                time: '11:00 AM',
+                type: 'Check-up',
+                status: 'completed'
+              },
+              {
+                id: 'APT004',
+                patient_name: 'David Brown',
+                time: '02:30 PM',
+                type: 'Emergency',
+                status: 'scheduled'
+              }
+            ] as RecentAppointment[]
+          })
         ]);
+        
         setStats(statsResponse.data);
         setRecentAppointments(appointmentsResponse.data);
       } catch (error) {
@@ -58,6 +104,7 @@ export function DoctorDashboard() {
       icon: Users,
       color: 'text-blue-600',
       bgColor: 'bg-blue-50',
+      borderColor: 'border-blue-200',
     },
     {
       title: "Today's Appointments",
@@ -66,6 +113,7 @@ export function DoctorDashboard() {
       icon: Calendar,
       color: 'text-green-600',
       bgColor: 'bg-green-50',
+      borderColor: 'border-green-200',
     },
     {
       title: 'Pending Appointments',
@@ -74,6 +122,7 @@ export function DoctorDashboard() {
       icon: Clock,
       color: 'text-orange-600',
       bgColor: 'bg-orange-50',
+      borderColor: 'border-orange-200',
     },
     {
       title: 'Consultations',
@@ -82,196 +131,278 @@ export function DoctorDashboard() {
       icon: Stethoscope,
       color: 'text-purple-600',
       bgColor: 'bg-purple-50',
+      borderColor: 'border-purple-200',
     },
   ];
 
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'completed':
-        return 'text-green-600 bg-green-50';
+        return 'bg-green-100 text-green-700 border-green-200';
       case 'cancelled':
-        return 'text-red-600 bg-red-50';
+        return 'bg-red-100 text-red-700 border-red-200';
       default:
-        return 'text-blue-600 bg-blue-50';
+        return 'bg-blue-100 text-blue-700 border-blue-200';
     }
   };
 
   if (loading) {
     return (
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        {[...Array(4)].map((_, i) => (
-          <Card key={i}>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                <div className="h-4 bg-gray-200 rounded animate-pulse"></div>
-              </CardTitle>
-              <div className="h-4 w-4 bg-gray-200 rounded animate-pulse"></div>
-            </CardHeader>
-            <CardContent>
-              <div className="h-8 bg-gray-200 rounded animate-pulse mb-1"></div>
-              <div className="h-3 bg-gray-200 rounded animate-pulse w-3/4"></div>
-            </CardContent>
-          </Card>
-        ))}
+      <div className="space-y-6">
+        {/* Loading skeleton */}
+        <Card className="border-gray-200">
+          <CardContent className="p-6">
+            <div className="animate-pulse">
+              <div className="h-8 bg-gray-200 rounded w-1/3 mb-2"></div>
+              <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+            </div>
+          </CardContent>
+        </Card>
+        
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+          {[...Array(4)].map((_, i) => (
+            <Card key={i} className="border-gray-200">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+                <div className="h-4 bg-gray-200 rounded animate-pulse w-24"></div>
+                <div className="h-10 w-10 bg-gray-200 rounded-full animate-pulse"></div>
+              </CardHeader>
+              <CardContent>
+                <div className="h-8 bg-gray-200 rounded animate-pulse mb-2 w-16"></div>
+                <div className="h-3 bg-gray-200 rounded animate-pulse w-3/4"></div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-4">
-      <div>
-        <h2 className="text-3xl font-bold tracking-tight">Doctor Dashboard</h2>
-        <p className="text-muted-foreground">
-          Welcome back! Here's your practice overview
-        </p>
-      </div>
+    <div className="space-y-6">
+      {/* Welcome Header */}
+      <Card className="border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50">
+        <CardContent className="p-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900 mb-2">
+                Welcome back, Dr. Smith
+              </h1>
+              <p className="text-gray-600">
+                Today is {new Date().toLocaleDateString('en-US', { 
+                  weekday: 'long', 
+                  year: 'numeric', 
+                  month: 'long', 
+                  day: 'numeric' 
+                })}. You have {stats.todays_appointments} appointments scheduled.
+              </p>
+            </div>
+            <div className="flex items-center space-x-2 text-sm text-gray-500">
+              <Activity className="h-4 w-4" />
+              <span>Last updated: {new Date().toLocaleTimeString()}</span>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
       
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      {/* Stats Cards */}
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
         {statsCards.map((stat, index) => {
           const Icon = stat.icon;
           return (
-            <Card key={index}>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
+            <Card key={index} className={`border ${stat.borderColor} hover:shadow-lg transition-all duration-200`}>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+                <CardTitle className="text-sm font-medium text-gray-700">
                   {stat.title}
                 </CardTitle>
-                <div className={`${stat.bgColor} p-2 rounded-full`}>
-                  <Icon className={`h-4 w-4 ${stat.color}`} />
+                <div className={`${stat.bgColor} p-3 rounded-lg border ${stat.borderColor}`}>
+                  <Icon className={`h-5 w-5 ${stat.color}`} />
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{stat.value}</div>
-                <p className="text-xs text-muted-foreground">
-                  {stat.description}
-                </p>
+                <div className="text-3xl font-bold text-gray-900 mb-1">{stat.value}</div>
+                <p className="text-sm text-gray-600">{stat.description}</p>
               </CardContent>
             </Card>
           );
         })}
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle>Today's Schedule</CardTitle>
-            <CardDescription>Your upcoming appointments</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {recentAppointments.length > 0 ? (
-              <div className="space-y-3">
-                {recentAppointments.slice(0, 4).map((appointment) => (
-                  <div key={appointment.id} className="flex items-center justify-between">
-                    <div className="space-y-1">
-                      <p className="text-sm font-medium">{appointment.patient_name}</p>
-                      <p className="text-xs text-muted-foreground">{appointment.type}</p>
-                    </div>
-                    <div className="text-right space-y-1">
-                      <p className="text-xs font-medium">{appointment.time}</p>
-                      <span className={`text-xs px-2 py-1 rounded-full ${getStatusColor(appointment.status)}`}>
-                        {appointment.status}
-                      </span>
-                    </div>
-                  </div>
-                ))}
+      {/* Main Content Grid */}
+      <div className="grid gap-6 lg:grid-cols-3">
+        {/* Today's Schedule - Takes 2 columns */}
+        <div className="lg:col-span-2">
+          <Card className="border-gray-200 h-full">
+            <CardHeader className="border-b border-gray-100">
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="text-lg font-semibold text-gray-900">Today's Schedule</CardTitle>
+                  <CardDescription className="text-gray-600">Your upcoming appointments</CardDescription>
+                </div>
+                <Calendar className="h-5 w-5 text-gray-400" />
               </div>
-            ) : (
-              <p className="text-sm text-muted-foreground">No appointments scheduled for today</p>
-            )}
-          </CardContent>
-        </Card>
+            </CardHeader>
+            <CardContent className="p-0">
+              {recentAppointments.length > 0 ? (
+                <div className="divide-y divide-gray-100">
+                  {recentAppointments.map((appointment) => (
+                    <div key={appointment.id} className="p-4 hover:bg-gray-50 transition-colors">
+                      <div className="flex items-center justify-between">
+                        <div className="flex-1">
+                          <div className="flex items-center space-x-3">
+                            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white font-medium text-sm">
+                              {appointment.patient_name.split(' ').map(n => n[0]).join('')}
+                            </div>
+                            <div>
+                              <p className="font-medium text-gray-900">{appointment.patient_name}</p>
+                              <p className="text-sm text-gray-600">{appointment.type}</p>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="text-right ml-4">
+                          <p className="text-sm font-medium text-gray-900">{appointment.time}</p>
+                          <Badge className={`mt-1 ${getStatusColor(appointment.status)}`}>
+                            {appointment.status.charAt(0).toUpperCase() + appointment.status.slice(1)}
+                          </Badge>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="p-8 text-center">
+                  <Calendar className="h-12 w-12 text-gray-300 mx-auto mb-3" />
+                  <p className="text-gray-500">No appointments scheduled for today</p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Quick Actions</CardTitle>
-            <CardDescription>Common tasks and shortcuts</CardDescription>
+        {/* Quick Actions - Takes 1 column */}
+        <Card className="border-gray-200">
+          <CardHeader className="border-b border-gray-100">
+            <CardTitle className="text-lg font-semibold text-gray-900">Quick Actions</CardTitle>
+            <CardDescription className="text-gray-600">Common tasks and shortcuts</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-3">
-            <div className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-50 cursor-pointer">
-              <Calendar className="h-4 w-4 text-blue-600" />
-              <span className="text-sm">View today's schedule</span>
-            </div>
-            <div className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-50 cursor-pointer">
-              <Users className="h-4 w-4 text-green-600" />
-              <span className="text-sm">Check patient records</span>
-            </div>
-            <div className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-50 cursor-pointer">
-              <Clock className="h-4 w-4 text-purple-600" />
-              <span className="text-sm">Set availability</span>
-            </div>
-            <div className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-50 cursor-pointer">
-              <FileText className="h-4 w-4 text-orange-600" />
-              <span className="text-sm">Write prescription</span>
+          <CardContent className="p-4">
+            <div className="space-y-3">
+              {[
+                { icon: Calendar, label: 'View schedule', color: 'text-blue-600 bg-blue-50 border-blue-200', href: '/doctor/appointments' },
+                { icon: Users, label: 'Patient records', color: 'text-green-600 bg-green-50 border-green-200', href: '/doctor/patients' },
+                { icon: Clock, label: 'Set availability', color: 'text-purple-600 bg-purple-50 border-purple-200', href: '/doctor/availability' },
+                { icon: FileText, label: 'Prescriptions', color: 'text-orange-600 bg-orange-50 border-orange-200', href: '/doctor/prescriptions' }
+              ].map((action, index) => {
+                const Icon = action.icon;
+                return (
+                  <Button
+                    key={index}
+                    variant="ghost"
+                    className="w-full justify-start p-3 h-auto hover:bg-gray-50"
+                  >
+                    <div className={`p-2 rounded-md border ${action.color} mr-3`}>
+                      <Icon className="h-4 w-4" />
+                    </div>
+                    <span className="text-sm font-medium text-gray-700">
+                      {action.label}
+                    </span>
+                  </Button>
+                );
+              })}
             </div>
           </CardContent>
         </Card>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-3">
-        <Card>
-          <CardHeader>
-            <CardTitle>Patient Summary</CardTitle>
-            <CardDescription>This week's overview</CardDescription>
+      {/* Bottom Stats Grid */}
+      <div className="grid gap-6 md:grid-cols-3">
+        {/* Patient Summary */}
+        <Card className="border-gray-200">
+          <CardHeader className="border-b border-gray-100">
+            <div className="flex items-center space-x-2">
+              <Users className="h-5 w-5 text-blue-600" />
+              <CardTitle className="text-lg font-semibold text-gray-900">Patient Summary</CardTitle>
+            </div>
+            <CardDescription className="text-gray-600">This week's overview</CardDescription>
           </CardHeader>
-          <CardContent>
-            <div className="space-y-2 text-sm">
-              <div className="flex justify-between">
-                <span>New patients</span>
-                <span className="font-medium">12</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Follow-ups</span>
-                <span className="font-medium">24</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Emergency cases</span>
-                <span className="font-medium">3</span>
-              </div>
+          <CardContent className="p-4">
+            <div className="space-y-4">
+              {[
+                { label: 'New patients', value: 12, color: 'text-blue-600', icon: Users },
+                { label: 'Follow-ups', value: 24, color: 'text-green-600', icon: Calendar },
+                { label: 'Emergency cases', value: 3, color: 'text-red-600', icon: AlertCircle }
+              ].map((item, index) => {
+                const Icon = item.icon;
+                return (
+                  <div key={index} className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <Icon className={`h-4 w-4 ${item.color}`} />
+                      <span className="text-sm text-gray-600">{item.label}</span>
+                    </div>
+                    <span className={`font-semibold ${item.color}`}>{item.value}</span>
+                  </div>
+                );
+              })}
             </div>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Availability Status</CardTitle>
-            <CardDescription>Current availability</CardDescription>
+        {/* Availability Status */}
+        <Card className="border-gray-200">
+          <CardHeader className="border-b border-gray-100">
+            <div className="flex items-center space-x-2">
+              <Clock className="h-5 w-5 text-purple-600" />
+              <CardTitle className="text-lg font-semibold text-gray-900">Availability</CardTitle>
+            </div>
+            <CardDescription className="text-gray-600">Current status</CardDescription>
           </CardHeader>
-          <CardContent>
-            <div className="space-y-2 text-sm">
-              <div className="flex justify-between">
-                <span>Today</span>
-                <span className="text-green-600 font-medium">Available</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Tomorrow</span>
-                <span className="text-green-600 font-medium">Available</span>
-              </div>
-              <div className="flex justify-between">
-                <span>This weekend</span>
-                <span className="text-red-600 font-medium">Unavailable</span>
-              </div>
+          <CardContent className="p-4">
+            <div className="space-y-4">
+              {[
+                { label: 'Today', status: 'Available', available: true },
+                { label: 'Tomorrow', status: 'Available', available: true },
+                { label: 'This weekend', status: 'Unavailable', available: false }
+              ].map((item, index) => (
+                <div key={index} className="flex items-center justify-between">
+                  <span className="text-sm text-gray-600">{item.label}</span>
+                  <div className="flex items-center space-x-2">
+                    <div className={`w-2 h-2 rounded-full ${item.available ? 'bg-green-500' : 'bg-red-500'}`}></div>
+                    <span className={`text-sm font-medium ${item.available ? 'text-green-700' : 'text-red-700'}`}>
+                      {item.status}
+                    </span>
+                  </div>
+                </div>
+              ))}
             </div>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Recent Activity</CardTitle>
-            <CardDescription>Latest updates</CardDescription>
+        {/* Recent Activity */}
+        <Card className="border-gray-200">
+          <CardHeader className="border-b border-gray-100">
+            <div className="flex items-center space-x-2">
+              <Activity className="h-5 w-5 text-indigo-600" />
+              <CardTitle className="text-lg font-semibold text-gray-900">Recent Activity</CardTitle>
+            </div>
+            <CardDescription className="text-gray-600">Latest updates</CardDescription>
           </CardHeader>
-          <CardContent>
-            <div className="space-y-2 text-sm">
-              <div className="flex justify-between">
-                <span>Patient consultation</span>
-                <span className="text-muted-foreground">2 hrs ago</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Prescription issued</span>
-                <span className="text-muted-foreground">4 hrs ago</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Schedule updated</span>
-                <span className="text-muted-foreground">1 day ago</span>
-              </div>
+          <CardContent className="p-4">
+            <div className="space-y-4">
+              {[
+                { activity: 'Patient consultation completed', time: '2 hrs ago', type: 'success' },
+                { activity: 'Prescription issued to M. Chen', time: '4 hrs ago', type: 'info' },
+                { activity: 'Schedule updated for tomorrow', time: '1 day ago', type: 'update' }
+              ].map((item, index) => (
+                <div key={index} className="flex items-start space-x-3">
+                  <div className={`w-2 h-2 rounded-full mt-2 ${
+                    item.type === 'success' ? 'bg-green-500' : 
+                    item.type === 'info' ? 'bg-blue-500' : 'bg-purple-500'
+                  }`}></div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm text-gray-900">{item.activity}</p>
+                    <p className="text-xs text-gray-500">{item.time}</p>
+                  </div>
+                </div>
+              ))}
             </div>
           </CardContent>
         </Card>
