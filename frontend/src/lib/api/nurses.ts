@@ -8,9 +8,11 @@ const api = axios.create({
         'Content-Type': 'application/json',
     },
 });
-export interface Patient {
+
+
+export interface Nurse {
     status: string;
-    patient_id: string;
+    nurse_id: string;
   first_name: string;
   last_name: string;
   date_of_birth: string | Date | null;
@@ -28,7 +30,7 @@ export interface Patient {
   age: number;
 }
 
-export interface PatientFormData {
+export interface NurseFormData {
   first_name: string;
   last_name: string;
   date_of_birth: string;
@@ -43,28 +45,28 @@ export interface PatientFormData {
   medical_history?: string;
 }
 
-export const patientApi = {
+export const nurseApi = {
     // Get all patients
-  getPatients: (search?: string) => 
-    api.get<Patient[]>('/api/patients/', { params: { search } }),
+  getNurses: (search?: string) => 
+    api.get<Nurse[]>('/api/nurses/', { params: { search } }),
   
   // Get single patient
-  getPatient: (patientId: string) => 
-    api.get<Patient>(`/api/patients/${patientId}/`),
+  getNurse: (nurseId: string) => 
+    api.get<Nurse>(`/api/nurses/${nurseId}/`),
   
   // Create patient
-  createPatient: (data: PatientFormData) => 
-    api.post<Patient>('/api/patients/', data),
+  createNurse: (data: NurseFormData) => 
+    api.post<Nurse>('/api/nurses/', data),
   
   // Update patient
-  updatePatient: (patientId: string, data: Partial<PatientFormData>) => 
-    api.put<Patient>(`/api/patients/${patientId}/`, data),
+  updateNurse: (nurseId: string, data: Partial<NurseFormData>) => 
+    api.put<Nurse>(`/api/nurses/${nurseId}/`, data),
   
   // Delete patient
-  deletePatient: (patientId: string) => 
-    api.delete(`/api/patients/${patientId}/`),
+  deleteNurse: (nurseId: string) => 
+    api.delete(`/api/nurses/${nurseId}/`),
   
   // Get stats
   getStats: () => 
-    api.get<{total_patients: number; male_patients: number; female_patients: number}>('/api/stats/'),
+    api.get<{total_nurses: number; male_nurses: number; female_nurses: number}>('/api/stats/'),
 };
