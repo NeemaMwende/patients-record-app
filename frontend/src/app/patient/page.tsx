@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { PatientLayout } from '@/components/layouts/PatientLayout';
-import { PatientDashboard } from '@/components/patient/patient-dashboard';
+import  PatientDashboard  from '@/components/patient/patient-dashboard';
 import  Appointments  from '@/components/patient/appointments';
 import  Profile  from '@/components/patient/profile';
 import { Toaster } from '@/components/ui/sonner';
