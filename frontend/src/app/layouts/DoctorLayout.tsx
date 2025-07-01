@@ -1,14 +1,13 @@
-"use client"
+"use client";
 
 import { useState } from 'react';
-import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { 
-  LayoutDashboard, 
-  Users, 
-  Calendar, 
-  Clock, 
-  User, 
+import {
+  LayoutDashboard,
+  Users,
+  Calendar,
+  Clock,
+  User,
   FileText,
   Settings,
   LogOut,
@@ -23,47 +22,49 @@ import { cn } from '@/lib/utils';
 
 interface DoctorLayoutProps {
   children: React.ReactNode;
+  activeTab: string;
+  onTabChange: (tab: string) => void;
 }
 
 const sidebarItems = [
   {
     title: 'Dashboard',
+    id: 'dashboard',
     href: '/doctor-dashboard',
     icon: LayoutDashboard,
+    description: 'Overview and statistics'
   },
   {
     title: 'My Patients',
+    id: 'my-patients',
     href: '/MyPatientsPage',
     icon: Users,
+    description: 'View my patients'
   },
   {
     title: 'Appointments',
-    href: '/doctor/DoctorAppointments',
+    id: 'appointment',
+    href: '/DoctorAppointmentsPage',
     icon: Calendar,
+    description: 'View my appointments'
   },
   {
     title: 'Availability',
-    href: '/doctor/DoctorAvailability',
+    id: 'availability',
+    href: '/DoctorAvailabilityPage',
     icon: Clock,
-  },
-  {
-    title: 'Prescriptions',
-    href: '/doctor/prescriptions',
-    icon: FileText,
+    description: 'View my schedules'
   },
   {
     title: 'Profile',
-    href: '/doctor/profile',
+    id: 'profile',
+    href: '/profile',
     icon: User,
-  },
-  {
-    title: 'Settings',
-    href: '/doctor/settings',
-    icon: Settings,
+    description: 'View my profile'
   },
 ];
 
-export function DoctorLayout({ children }: DoctorLayoutProps) {
+export function DoctorLayout({ children, activeTab, onTabChange }: DoctorLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const pathname = usePathname();
 
@@ -109,24 +110,26 @@ export function DoctorLayout({ children }: DoctorLayoutProps) {
         <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
           {sidebarItems.map((item) => {
             const Icon = item.icon;
-            const isActive = pathname === item.href;
-            
+            const isActive = activeTab === item.id;
+
             return (
-              <Link
-                key={item.href}
-                href={item.href}
+              <button
+                key={item.id}
+                onClick={() => {
+                  onTabChange(item.id);
+                  setSidebarOpen(false);
+                }}
                 className={cn(
-                  "flex items-center px-3 py-3 text-sm font-medium rounded-lg transition-all duration-200 group",
+                  "flex w-full items-center px-3 py-3 text-sm font-medium rounded-lg transition-all duration-200 group",
                   isActive
                     ? "bg-blue-50 text-blue-700 shadow-sm border border-blue-100"
                     : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                 )}
-                onClick={() => setSidebarOpen(false)}
               >
                 <div className={cn(
                   "flex items-center justify-center w-8 h-8 rounded-md mr-3 transition-colors",
-                  isActive 
-                    ? "bg-blue-100 text-blue-600" 
+                  isActive
+                    ? "bg-blue-100 text-blue-600"
                     : "text-gray-400 group-hover:text-gray-600"
                 )}>
                   <Icon className="h-4 w-4" />
@@ -135,22 +138,25 @@ export function DoctorLayout({ children }: DoctorLayoutProps) {
                 {isActive && (
                   <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
                 )}
-              </Link>
+              </button>
             );
           })}
         </nav>
 
         {/* Sidebar Footer */}
         <div className="p-4 border-t border-gray-200">
-          <Link
-            href="/logout"
-            className="flex items-center px-3 py-3 text-sm font-medium text-red-600 rounded-lg hover:bg-red-50 transition-colors group"
+          <button
+            onClick={() => {
+              // You can trigger logout logic here if needed
+              window.location.href = '/logout';
+            }}
+            className="flex items-center w-full px-3 py-3 text-sm font-medium text-red-600 rounded-lg hover:bg-red-50 transition-colors group"
           >
             <div className="flex items-center justify-center w-8 h-8 rounded-md mr-3 text-red-500 group-hover:bg-red-100">
               <LogOut className="h-4 w-4" />
             </div>
             <span>Sign Out</span>
-          </Link>
+          </button>
         </div>
       </div>
 
@@ -170,14 +176,14 @@ export function DoctorLayout({ children }: DoctorLayoutProps) {
               </Button>
               <div>
                 <h1 className="text-xl font-semibold text-gray-900">
-                  {sidebarItems.find(item => item.href === pathname)?.title || 'Doctor Portal'}
+                  {sidebarItems.find(item => item.id === activeTab)?.title || 'Doctor Portal'}
                 </h1>
                 <p className="text-sm text-gray-500">
-                  {new Date().toLocaleDateString('en-US', { 
-                    weekday: 'long', 
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric' 
+                  {new Date().toLocaleDateString('en-US', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
                   })}
                 </p>
               </div>
@@ -191,7 +197,7 @@ export function DoctorLayout({ children }: DoctorLayoutProps) {
                   3
                 </span>
               </Button>
-              
+
               {/* User Profile */}
               <div className="flex items-center space-x-3 pl-4 border-l border-gray-200">
                 <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center">

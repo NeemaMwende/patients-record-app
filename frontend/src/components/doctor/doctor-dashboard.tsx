@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { 
   LayoutDashboard, 
   Users, 
@@ -22,7 +23,9 @@ import {
   Filter,
   Plus,
   Save,
-  Edit
+  Edit,
+  FileText,
+  Settings
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -38,26 +41,51 @@ const navigation = [
   {
     name: 'Dashboard',
     id: 'dashboard',
+    href: '/doctor-dashboard',
     icon: LayoutDashboard,
     description: 'Overview and statistics'
   },
   {
     name: 'My Patients',
     id: 'patients',
+    href: '/my-patients',
     icon: Users,
     description: 'Manage assigned patients'
   },
   {
-    name: 'Schedule',
-    id: 'schedule',
+    name: 'Appointments',
+    id: 'appointments',
+    href: '/doctor-appointments',
     icon: Calendar,
-    description: 'Set availability & appointments'
+    description: 'View and manage appointments'
+  },
+  {
+    name: 'Availability',
+    id: 'availability',
+    href: '/doctor-availability',
+    icon: Clock,
+    description: 'Set availability & schedule'
+  },
+  {
+    name: 'Prescriptions',
+    id: 'prescriptions',
+    href: '/prescriptions',
+    icon: FileText,
+    description: 'Manage prescriptions'
   },
   {
     name: 'Profile',
     id: 'profile',
+    href: '/profile',
     icon: User,
     description: 'Manage your profile'
+  },
+  {
+    name: 'Settings',
+    id: 'settings',
+    href: '/settings',
+    icon: Settings,
+    description: 'Application settings'
   },
 ];
 
@@ -150,6 +178,8 @@ const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Sat
 
 // Dashboard Component
 export function DashboardContent() {
+  const router = useRouter();
+
   const statsCards = [
     {
       title: 'My Patients',
@@ -159,6 +189,7 @@ export function DashboardContent() {
       color: 'text-blue-600',
       bgColor: 'bg-blue-50',
       borderColor: 'border-blue-200',
+      href: '/MyPatientsPage'
     },
     {
       title: "Today's Appointments",
@@ -168,6 +199,7 @@ export function DashboardContent() {
       color: 'text-green-600',
       bgColor: 'bg-green-50',
       borderColor: 'border-green-200',
+      href: '/DoctorAppointmentsPage'
     },
     {
       title: 'Pending Appointments',
@@ -177,6 +209,7 @@ export function DashboardContent() {
       color: 'text-orange-600',
       bgColor: 'bg-orange-50',
       borderColor: 'border-orange-200',
+      href: '/DoctorAvailabilityPage'
     },
     {
       title: 'Consultations',
@@ -186,6 +219,7 @@ export function DashboardContent() {
       color: 'text-purple-600',
       bgColor: 'bg-purple-50',
       borderColor: 'border-purple-200',
+      href: '/prescriptions'
     },
   ];
 
@@ -198,6 +232,10 @@ export function DashboardContent() {
       default:
         return 'bg-blue-100 text-blue-700 border-blue-200';
     }
+  };
+
+  const handleNavigation = (href: string) => {
+    router.push(href);
   };
 
   return (
@@ -232,7 +270,11 @@ export function DashboardContent() {
         {statsCards.map((stat, index) => {
           const Icon = stat.icon;
           return (
-            <Card key={index} className={`border ${stat.borderColor} hover:shadow-lg transition-all duration-200`}>
+            <Card 
+              key={index} 
+              className={`border ${stat.borderColor} hover:shadow-lg transition-all duration-200 cursor-pointer`}
+              onClick={() => handleNavigation(stat.href)}
+            >
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
                 <CardTitle className="text-sm font-medium text-gray-700">
                   {stat.title}
@@ -261,7 +303,14 @@ export function DashboardContent() {
                   <CardTitle className="text-lg font-semibold text-gray-900">Today's Schedule</CardTitle>
                   <CardDescription className="text-gray-600">Your upcoming appointments</CardDescription>
                 </div>
-                <Calendar className="h-5 w-5 text-gray-400" />
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => handleNavigation('/doctor-appointments')}
+                >
+                  <Calendar className="h-4 w-4 mr-2" />
+                  View All
+                </Button>
               </div>
             </CardHeader>
             <CardContent className="p-0">
@@ -303,10 +352,12 @@ export function DashboardContent() {
           <CardContent className="p-4">
             <div className="space-y-3">
               {[
-                { icon: Calendar, label: 'View full schedule', color: 'text-blue-600 bg-blue-50 border-blue-200' },
-                { icon: Users, label: 'Patient records', color: 'text-green-600 bg-green-50 border-green-200' },
-                { icon: Clock, label: 'Set availability', color: 'text-purple-600 bg-purple-50 border-purple-200' },
-                { icon: User, label: 'Update profile', color: 'text-orange-600 bg-orange-50 border-orange-200' }
+                { icon: Calendar, label: 'View full schedule', color: 'text-blue-600 bg-blue-50 border-blue-200', href: '/DoctorAppointmentsPage' },
+                { icon: Users, label: 'Patient records', color: 'text-green-600 bg-green-50 border-green-200', href: '/MyPatientsPage' },
+                { icon: Clock, label: 'Set availability', color: 'text-purple-600 bg-purple-50 border-purple-200', href: '/DoctorAvailabilityPage' },
+                { icon: FileText, label: 'Manage prescriptions', color: 'text-indigo-600 bg-indigo-50 border-indigo-200', href: '/DoctorAppointmentsPage' },
+                { icon: User, label: 'Update profile', color: 'text-orange-600 bg-orange-50 border-orange-200', href: '/profile' },
+                { icon: Settings, label: 'Settings', color: 'text-gray-600 bg-gray-50 border-gray-200', href: '/settings' }
               ].map((action, index) => {
                 const Icon = action.icon;
                 return (
@@ -314,6 +365,7 @@ export function DashboardContent() {
                     key={index}
                     variant="ghost"
                     className="w-full justify-start p-3 h-auto hover:bg-gray-50"
+                    onClick={() => handleNavigation(action.href)}
                   >
                     <div className={`p-2 rounded-md border ${action.color} mr-3`}>
                       <Icon className="h-4 w-4" />
