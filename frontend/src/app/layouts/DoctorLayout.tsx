@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 
 interface DoctorLayoutProps {
@@ -30,37 +31,32 @@ const sidebarItems = [
   {
     title: 'Dashboard',
     id: 'dashboard',
-    href: '/doctor-dashboard',
     icon: LayoutDashboard,
     description: 'Overview and statistics'
   },
   {
     title: 'My Patients',
     id: 'my-patients',
-    href: '/MyPatientsPage',
     icon: Users,
     description: 'View my patients'
   },
   {
     title: 'Appointments',
     id: 'appointment',
-    href: '/DoctorAppointmentsPage',
     icon: Calendar,
     description: 'View my appointments'
   },
   {
     title: 'Availability',
     id: 'availability',
-    href: '/DoctorAvailabilityPage',
     icon: Clock,
-    description: 'View my schedules'
+    description: 'Manage my availability'
   },
   {
     title: 'Profile',
     id: 'profile',
-    href: '/profile',
     icon: User,
-    description: 'View my profile'
+    description: 'View and update profile'
   },
 ];
 
@@ -69,103 +65,82 @@ export function DoctorLayout({ children, activeTab, onTabChange }: DoctorLayoutP
   const pathname = usePathname();
 
   return (
-    <div className="flex h-screen bg-gray-50">
-      {/* Mobile sidebar overlay */}
+    <div className="min-h-screen bg-gray-50">
       {sidebarOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black bg-opacity-50 lg:hidden"
+          className="fixed inset-0 z-40 bg-black bg-opacity-25 lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
 
-      {/* Sidebar */}
-      <div
-        className={cn(
-          "fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:flex lg:flex-col",
-          sidebarOpen ? "translate-x-0" : "-translate-x-full"
-        )}
-      >
-        {/* Sidebar Header */}
-        <div className="flex items-center justify-between h-16 px-6 border-b border-gray-200 bg-white">
-          <div className="flex items-center space-x-2">
-            <div className="p-2 bg-blue-50 rounded-lg">
-              <Stethoscope className="h-6 w-6 text-blue-600" />
+      <div className={cn(
+        "fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform transition-transform duration-200 ease-in-out",
+        "lg:translate-x-0",
+        sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+      )}>
+        <div className="flex flex-col h-full">
+          <div className="flex items-center justify-between h-16 px-4 border-b border-gray-200 flex-shrink-0">
+            <div className="flex items-center space-x-2">
+              <div className="p-2 bg-blue-600 rounded-lg">
+                <Stethoscope className="h-6 w-6 text-white" />
+              </div>
+              <div>
+                <h1 className="text-lg font-semibold text-gray-900">Doctor Portal</h1>
+                <p className="text-xs text-gray-500">Medical Dashboard</p>
+              </div>
             </div>
-            <div>
-              <span className="text-lg font-bold text-gray-900">Doctor Portal</span>
-              <p className="text-xs text-gray-500">Medical Dashboard</p>
-            </div>
+            <Button variant="ghost" size="sm" className="lg:hidden" onClick={() => setSidebarOpen(false)}>
+              <X className="h-5 w-5" />
+            </Button>
           </div>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="lg:hidden"
-            onClick={() => setSidebarOpen(false)}
-          >
-            <X className="h-4 w-4" />
-          </Button>
-        </div>
 
-        {/* Navigation */}
-        <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
-          {sidebarItems.map((item) => {
-            const Icon = item.icon;
-            const isActive = activeTab === item.id;
+          <nav className="flex-1 px-4 py-4 space-y-2 overflow-y-auto">
+            {sidebarItems.map((item) => {
+              const Icon = item.icon;
+              const isActive = activeTab === item.id;
 
-            return (
-              <button
-                key={item.id}
-                onClick={() => {
-                  onTabChange(item.id);
-                  setSidebarOpen(false);
-                }}
-                className={cn(
-                  "flex w-full items-center px-3 py-3 text-sm font-medium rounded-lg transition-all duration-200 group",
-                  isActive
-                    ? "bg-blue-50 text-blue-700 shadow-sm border border-blue-100"
-                    : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-                )}
-              >
-                <div className={cn(
-                  "flex items-center justify-center w-8 h-8 rounded-md mr-3 transition-colors",
-                  isActive
-                    ? "bg-blue-100 text-blue-600"
-                    : "text-gray-400 group-hover:text-gray-600"
-                )}>
-                  <Icon className="h-4 w-4" />
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => {
+                    onTabChange(item.id);
+                    setSidebarOpen(false);
+                  }}
+                  className={cn(
+                    "w-full flex items-start px-3 py-2 text-sm font-medium rounded-md transition-colors",
+                    isActive
+                      ? "bg-blue-50 text-blue-700 border border-blue-200"
+                      : "text-gray-700 hover:bg-gray-50 hover:text-gray-900"
+                  )}
+                >
+                  <Icon className={cn("mr-3 h-5 w-5 mt-0.5", isActive ? "text-blue-600" : "text-gray-400")} />
+                  <div className="text-left">
+                    <div>{item.title}</div>
+                    <div className="text-xs text-gray-500">{item.description}</div>
+                  </div>
+                </button>
+              );
+            })}
+          </nav>
+
+          <div className="p-4 border-t border-gray-200 flex-shrink-0">
+            <Card className="p-3 bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
+              <div className="flex items-center space-x-2">
+                <FileText className="h-5 w-5 text-blue-600" />
+                <div>
+                  <p className="text-sm font-medium text-blue-900">Need Help?</p>
+                  <p className="text-xs text-blue-700">Check documentation</p>
                 </div>
-                <span className="flex-1">{item.title}</span>
-                {isActive && (
-                  <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
-                )}
-              </button>
-            );
-          })}
-        </nav>
-
-        {/* Sidebar Footer */}
-        <div className="p-4 border-t border-gray-200">
-          <button
-            onClick={() => {
-              // You can trigger logout logic here if needed
-              window.location.href = '/logout';
-            }}
-            className="flex items-center w-full px-3 py-3 text-sm font-medium text-red-600 rounded-lg hover:bg-red-50 transition-colors group"
-          >
-            <div className="flex items-center justify-center w-8 h-8 rounded-md mr-3 text-red-500 group-hover:bg-red-100">
-              <LogOut className="h-4 w-4" />
-            </div>
-            <span>Sign Out</span>
-          </button>
+              </div>
+            </Card>
+          </div>
         </div>
       </div>
 
-      {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-h-0">
-        {/* Top Header */}
-        <header className="bg-white border-b border-gray-200 px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
+      <div className="lg:ml-64">
+        <div className="sticky top-0 z-10 bg-white shadow-sm border-b border-gray-200">
+          <div className="flex items-center justify-between h-16 px-4 sm:px-6 lg:px-8">
+            <div className="flex items-center">
               <Button
                 variant="ghost"
                 size="sm"
@@ -174,49 +149,37 @@ export function DoctorLayout({ children, activeTab, onTabChange }: DoctorLayoutP
               >
                 <Menu className="h-5 w-5" />
               </Button>
-              <div>
-                <h1 className="text-xl font-semibold text-gray-900">
-                  {sidebarItems.find(item => item.id === activeTab)?.title || 'Doctor Portal'}
-                </h1>
+              <div className="ml-4 lg:ml-0">
+                <h2 className="text-lg font-semibold text-gray-900">
+                  {sidebarItems.find(item => item.id === activeTab)?.title || 'Dashboard'}
+                </h2>
                 <p className="text-sm text-gray-500">
-                  {new Date().toLocaleDateString('en-US', {
-                    weekday: 'long',
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                  })}
+                  {sidebarItems.find(item => item.id === activeTab)?.description || 'Overview and statistics'}
                 </p>
               </div>
             </div>
 
             <div className="flex items-center space-x-4">
-              {/* Notifications */}
-              <Button variant="ghost" size="sm" className="relative">
-                <Bell className="h-5 w-5 text-gray-600" />
-                <span className="absolute -top-1 -right-1 h-4 w-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
-                  3
-                </span>
-              </Button>
-
-              {/* User Profile */}
-              <div className="flex items-center space-x-3 pl-4 border-l border-gray-200">
-                <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
-                  <User className="h-4 w-4 text-white" />
-                </div>
-                <div className="hidden md:block">
-                  <p className="text-sm font-medium text-gray-900">Dr. Smith</p>
-                  <p className="text-xs text-gray-500">Cardiologist</p>
-                </div>
+              <div className="hidden sm:block text-sm text-gray-500 flex items-center space-x-2">
+                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                <span>System Online</span>
               </div>
+
+              <Button
+                variant="outline"
+                onClick={() => {
+                  window.location.href = '/logout';
+                }}
+              >
+                <LogOut className="h-4 w-4 mr-2" />
+                Logout
+              </Button>
             </div>
           </div>
-        </header>
+        </div>
 
-        {/* Page Content */}
-        <main className="flex-1 p-6 overflow-y-auto bg-gray-50">
-          <div className="max-w-7xl mx-auto">
-            {children}
-          </div>
+        <main className="p-4 sm:p-6 lg:p-8">
+          <div className="max-w-7xl mx-auto">{children}</div>
         </main>
       </div>
     </div>

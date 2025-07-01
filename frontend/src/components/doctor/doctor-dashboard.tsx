@@ -69,7 +69,7 @@ export function DashboardContent({ onNavigate }: DashboardContentProps) {
     { icon: Clock, label: "Set availability", tab: "availability", color: "text-purple-600 bg-purple-50 border-purple-200" },
     { icon: FileText, label: "Manage prescriptions", tab: "appointment", color: "text-indigo-600 bg-indigo-50 border-indigo-200" },
     { icon: User, label: "Update profile", tab: "profile", color: "text-orange-600 bg-orange-50 border-orange-200" },
-    { icon: LayoutDashboard, label: "Settings", tab: "settings", color: "text-gray-600 bg-gray-50 border-gray-200" },
+    // { icon: LayoutDashboard, label: "Settings", tab: "settings", color: "text-gray-600 bg-gray-50 border-gray-200" },
   ];
 
   const appointments = [
