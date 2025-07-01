@@ -28,7 +28,7 @@
 "use client"
 
 import { useState } from 'react';
-import { NurseLayout } from '@/components/layouts/NurseLayout';
+import { NurseLayout } from '@/app/layouts/NurseLayout';
 import { NurseDashboard } from '@/components/nurse/nurse-dashboard';
 import { PatientForm } from '@/components/nurse/patient-form';
 import { PatientList } from '@/components/nurse/patient-list';

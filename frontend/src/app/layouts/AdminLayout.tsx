@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from 'react';
-import Link from 'next/link';
 import {
   LayoutDashboard,
   Users,
@@ -12,33 +11,68 @@ import {
   FileText,
   Calendar,
   UserCog,
-  LogOut
+  LogOut,
+  UsersIcon
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 
-interface DoctorLayoutProps {
+interface AdminLayoutProps {
   children: React.ReactNode;
   activeTab: string;
   onTabChange: (tab: string) => void;
 }
 
 const navigation = [
-  { name: 'Dashboard', id: 'dashboard', icon: LayoutDashboard, description: 'Overview and statistics' },
-  { name: 'Register Doctor', id: 'form', icon: UserPlus, description: 'Add new doctor record' },
-  { name: 'Doctor Records', id: 'list', icon: Users, description: 'View and manage doctors' },
-  { name: 'Schedules', id: 'schedules', icon: Calendar, description: 'Manage doctor schedules' },
-  { name: 'Patients', id: 'patients', icon: UserCog, description: 'Doctor-Patient assignments' },
+  { 
+    name: 'Dashboard', 
+    id: 'dashboard', 
+    icon: LayoutDashboard, 
+    description: 'Overview and statistics' 
+  },
+  { 
+    name: 'Register Doctor', 
+    id: 'register-doctor', 
+    icon: UserPlus, 
+    description: 'Add new doctor record' 
+  },
+  { 
+    name: 'Doctor Records', 
+    id: 'doctors', 
+    icon: Stethoscope, 
+    description: 'View and manage doctors' 
+  },
+  { 
+    name: 'Doctor Schedules', 
+    id: 'schedules', 
+    icon: Calendar, 
+    description: 'Manage doctor schedules' 
+  },
+  { 
+    name: 'Doctor Patients', 
+    id: 'doctor-patients', 
+    icon: UserCog, 
+    description: 'Doctor-Patient assignments' 
+  },
+  { 
+    name: 'Registered Patients', 
+    id: 'patients', 
+    icon: UsersIcon, 
+    description: 'All registered patients' 
+  },
 ];
 
-export function AdminLayout({ children, activeTab, onTabChange }: DoctorLayoutProps) {
+export function AdminLayout({ children, activeTab, onTabChange }: AdminLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const handleLogout = () => {
-    // Replace with your logout logic
-    console.log('Logging out...');
+    // Clear admin session data
+    localStorage.removeItem('adminInfo');
+    localStorage.removeItem('authToken');
+    
+    // Redirect to login
     window.location.href = '/auth/login';
   };
 
@@ -64,7 +98,7 @@ export function AdminLayout({ children, activeTab, onTabChange }: DoctorLayoutPr
               </div>
               <div>
                 <h1 className="text-lg font-semibold text-gray-900">MedRecord</h1>
-                <p className="text-xs text-gray-500">Doctor Management</p>
+                <p className="text-xs text-gray-500">Admin Panel</p>
               </div>
             </div>
             <Button variant="ghost" size="sm" className="lg:hidden" onClick={() => setSidebarOpen(false)}>

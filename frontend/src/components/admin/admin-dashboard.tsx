@@ -8,7 +8,11 @@ import { Badge } from '@/components/ui/badge';
 import { doctorApi } from '@/lib/api/doctors';
 import { DoctorStats } from '@/lib/types/doctor';
 
-export function DoctorDashboard() {
+interface AdminDashboardProps {
+  onNavigate: (tab: string) => void;
+}
+
+export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
   const [stats, setStats] = useState<DoctorStats>({
     total_doctors: 0,
     active_doctors: 0,
@@ -18,6 +22,11 @@ export function DoctorDashboard() {
     specializations: [],
   });
   const [loading, setLoading] = useState(true);
+  const [adminInfo, setAdminInfo] = useState({
+    name: 'Admin Smith',
+    role: 'System Administrator',
+    lastLogin: new Date().toLocaleDateString(),
+  });
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -30,6 +39,17 @@ export function DoctorDashboard() {
         setLoading(false);
       }
     };
+
+    // Get admin info from localStorage or session
+    const savedAdminInfo = localStorage.getItem('adminInfo');
+    if (savedAdminInfo) {
+      const adminData = JSON.parse(savedAdminInfo);
+      setAdminInfo({
+        name: adminData.name || 'Admin Smith',
+        role: adminData.role || 'System Administrator',
+        lastLogin: adminData.lastLogin || new Date().toLocaleDateString(),
+      });
+    }
 
     fetchStats();
   }, []);
@@ -69,6 +89,33 @@ export function DoctorDashboard() {
     },
   ];
 
+  const quickActions = [
+    {
+      label: 'Register new doctor',
+      icon: Stethoscope,
+      color: 'text-blue-600',
+      tab: 'register-doctor',
+    },
+    {
+      label: 'Manage schedules',
+      icon: Calendar,
+      color: 'text-green-600',
+      tab: 'schedules',
+    },
+    {
+      label: 'View all doctors',
+      icon: Users,
+      color: 'text-purple-600',
+      tab: 'doctors',
+    },
+    {
+      label: 'View patients',
+      icon: Activity,
+      color: 'text-orange-600',
+      tab: 'patients',
+    },
+  ];
+
   if (loading) {
     return (
       <div className="space-y-4">
@@ -95,9 +142,9 @@ export function DoctorDashboard() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-3xl font-bold tracking-tight">Admin Dashboard</h2>
+        <h2 className="text-3xl font-bold tracking-tight">Welcome back, {adminInfo.name}</h2>
         <p className="text-muted-foreground">
-          Overview of medical staff and department statistics
+          {adminInfo.role} • Last login: {adminInfo.lastLogin}
         </p>
       </div>
       
@@ -192,22 +239,19 @@ export function DoctorDashboard() {
             <CardDescription>Common administrative tasks</CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
-            <div className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-50 cursor-pointer">
-              <Stethoscope className="h-4 w-4 text-blue-600" />
-              <span className="text-sm">Register new doctor</span>
-            </div>
-            <div className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-50 cursor-pointer">
-              <Calendar className="h-4 w-4 text-green-600" />
-              <span className="text-sm">Manage schedules</span>
-            </div>
-            <div className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-50 cursor-pointer">
-              <Users className="h-4 w-4 text-purple-600" />
-              <span className="text-sm">View all doctors</span>
-            </div>
-            <div className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-50 cursor-pointer">
-              <Activity className="h-4 w-4 text-orange-600" />
-              <span className="text-sm">Department analytics</span>
-            </div>
+            {quickActions.map((action, index) => {
+              const Icon = action.icon;
+              return (
+                <div 
+                  key={index}
+                  className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors"
+                  onClick={() => onNavigate(action.tab)}
+                >
+                  <Icon className={`h-4 w-4 ${action.color}`} />
+                  <span className="text-sm">{action.label}</span>
+                </div>
+              );
+            })}
           </CardContent>
         </Card>
 
@@ -224,7 +268,7 @@ export function DoctorDashboard() {
               <div className="flex items-center justify-between p-2 rounded-lg bg-green-50">
                 <div className="flex items-center space-x-2">
                   <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                  <span className="text-sm">Dr. Smith updated schedule</span>
+                  <span className="text-sm">Dr. Johnson updated schedule</span>
                 </div>
                 <span className="text-xs text-muted-foreground">2h ago</span>
               </div>

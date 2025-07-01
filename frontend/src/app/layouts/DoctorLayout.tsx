@@ -33,7 +33,7 @@ const sidebarItems = [
   },
   {
     title: 'My Patients',
-    href: '/doctor/MyPatientsPage',
+    href: '/MyPatientsPage',
     icon: Users,
   },
   {
