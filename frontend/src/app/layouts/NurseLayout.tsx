@@ -34,11 +34,18 @@ const navigation = [
     icon: UserPlus,
     description: 'Add new patient record'
   },
+
   {
     name: 'Patient Records',
     id: 'patients',
     icon: Users,
     description: 'View and manage patients'
+  },
+  {
+    name: 'Profile',
+    id: 'profile',
+    icon: Users,
+    description: 'View my profile'
   },
 ];
 
