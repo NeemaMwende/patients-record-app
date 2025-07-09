@@ -18,6 +18,7 @@ import { cn } from '@/lib/utils';
 import { patientFormSchema, PatientFormValues } from '@/lib/validations';
 import { patientApi, Patient } from '@/lib/api';
 import { toast } from 'sonner';
+import { handleApiError } from '@/lib/api/patients';
 
 interface PatientFormProps {
   patient?: Patient;
@@ -141,7 +142,9 @@ export function PatientForm({ patient, onSuccess, onCancel }: PatientFormProps) 
         setCalculatedAge(null);
       }
     } catch (error: any) {
-        toast.error(error.response?.data?.message || 'Something went wrong');
+      const errorMessage = handleApiError(error);
+      toast.error(errorMessage);
+      console.error('Patient form error:', error);
     } finally {
       setIsLoading(false);
     }
