@@ -19,4 +19,8 @@ urlpatterns = [
     # Future endpoints (commented out for now)
     # path('doctors/', views.doctor_list, name='doctor-list'),    
     # path('admin/', views.admin-dashboard, name='admin-dashboard'),
+    
+    #doctors
+    #path('doctors/<str:doctor_id>/appointments/recent/', views.RecentAppointmentsView.as_view())
+
 ]
