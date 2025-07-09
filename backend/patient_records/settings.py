@@ -57,6 +57,7 @@ ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'patients-management-system.onrender.
 
 
 # Application definition
+AUTH_USER_MODEL = 'patients.User'
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -66,6 +67,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework_simplejwt',
     'corsheaders',
     'patients',
 ]
@@ -184,6 +186,8 @@ REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': [
         'rest_framework.renderers.JSONRenderer',
     ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 20,
 }
 # Media files
 MEDIA_URL = '/media/'

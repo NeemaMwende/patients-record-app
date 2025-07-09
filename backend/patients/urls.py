@@ -1,4 +1,6 @@
+# urls.py - Updated with JWT token refresh endpoint
 from django.urls import path
+from rest_framework_simplejwt.views import TokenRefreshView
 from . import views
 
 urlpatterns = [
@@ -12,6 +14,7 @@ urlpatterns = [
     path('auth/login/', views.login_user, name='login-user'),
     path('auth/logout/', views.logout_user, name='logout-user'),
     path('auth/profile/', views.user_profile, name='user-profile'),
+    path('auth/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     
     # Utility endpoints
     path('login-success/', views.login_success, name='login_success'),
@@ -22,5 +25,4 @@ urlpatterns = [
     
     #doctors
     #path('doctors/<str:doctor_id>/appointments/recent/', views.RecentAppointmentsView.as_view())
-
 ]

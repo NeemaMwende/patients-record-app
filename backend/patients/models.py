@@ -1,15 +1,14 @@
 from django.db import models
 from django.core.validators import RegexValidator
 from django.contrib.auth.models import AbstractUser
-
 from django.utils import timezone
+
 class Patient(models.Model):
     GENDER_CHOICES = [
         ('M', 'Male'),
         ('F', 'Female'),
         ('O', 'Other'),
     ]
-    
     
     BLOOD_TYPE_CHOICES = [
         ('A+', 'A+'), ('A-', 'A-'),
@@ -59,16 +58,6 @@ class Patient(models.Model):
     
     class Meta:
         ordering = ['-created_at']
-        
-class User(AbstractUser):
-    ROLE_CHOICES = [
-        ('admin', 'Admin'),
-        ('doctor', 'Doctor'),
-        ('nurse', 'Nurse'),
-        ('patient', 'Patient'),
-    ]
-    role = models.CharField(max_length=20, choices=ROLE_CHOICES) 
-    
 
 class User(AbstractUser):
     """Extended user model for patients and doctors"""
@@ -76,6 +65,7 @@ class User(AbstractUser):
         ('patient', 'Patient'),
         ('doctor', 'Doctor'),
         ('admin', 'Admin'),
+        ('nurse', 'Nurse'),
     )
     user_type = models.CharField(max_length=10, choices=USER_TYPES, default='patient')
     phone = models.CharField(max_length=20, blank=True)
