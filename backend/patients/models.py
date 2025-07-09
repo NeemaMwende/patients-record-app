@@ -67,7 +67,8 @@ class User(AbstractUser):
         ('admin', 'Admin'),
         ('nurse', 'Nurse'),
     )
-    user_type = models.CharField(max_length=10, choices=USER_TYPES, default='patient')
+    # Fixed: Changed user_type to role to match serializers
+    role = models.CharField(max_length=10, choices=USER_TYPES, default='patient')
     phone = models.CharField(max_length=20, blank=True)
     date_of_birth = models.DateField(null=True, blank=True)
     address = models.TextField(blank=True)
