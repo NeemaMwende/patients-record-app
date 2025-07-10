@@ -5,8 +5,8 @@ import './globals.css'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'MedRecord - Patient Management System',
-  description: 'A comprehensive patient records management system',
+  title: 'MedSystem Portal - Hospital Management System',
+  description: 'Secure medical records and hospital management system',
 }
 
 export default function RootLayout({

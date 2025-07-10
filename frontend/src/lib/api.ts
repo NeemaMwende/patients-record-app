@@ -8,9 +8,8 @@ const api = axios.create({
         'Content-Type': 'application/json',
     },
 });
-
-
 export interface Patient {
+    status: string;
     patient_id: string;
   first_name: string;
   last_name: string;
@@ -30,7 +29,7 @@ export interface Patient {
 }
 
 export interface PatientFormData {
-    first_name: string;
+  first_name: string;
   last_name: string;
   date_of_birth: string;
   gender: 'M' | 'F' | 'O';
